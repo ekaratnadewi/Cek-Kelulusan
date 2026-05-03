@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cek Kelulusan</title>
+  <style>
+    body { font-family: Arial; text-align: center; padding: 50px; }
+    input { padding: 10px; width: 250px; }
+    button { padding: 10px 20px; cursor: pointer; }
+    #hasil { margin-top: 20px; font-size: 20px; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+  <h1>CEK KELULUSAN</h1>
+  <p>Masukkan NISN:</p>
+
+  <input type="text" id="nisn" placeholder="Contoh: 1234567890">
+  <button onclick="cekKelulusan()">CEK</button>
+
+  <div id="hasil"></div>
+
+  <script>
+    async function cekKelulusan() {
+      const nisn = document.getElementById("nisn").value.trim();
+      const hasil = document.getElementById("hasil");
+
+      if (!nisn) {
+        hasil.innerHTML = "⚠️ Masukkan NISN dulu.";
+        return;
+      }
+
+      const response = await fetch("data.json");
+      const data = await response.json();
+
+      const siswa = data.find(s => s.nisn === nisn);
+
+      if (siswa) {
+        if (siswa.status === "LULUS") {
+          hasil.innerHTML = `🎉 Selamat ${siswa.nama}, Anda <span style="color:green;">LULUS</span>`;
+        } else {
+          hasil.innerHTML = `😢 Maaf ${siswa.nama}, Anda <span style="color:red;">TIDAK LULUS</span>`;
+        }
+      } else {
+        hasil.innerHTML = "❌ NISN tidak ditemukan.";
+      }
+    }
+  </script>
+
+</body>
+</html>
