@@ -21,23 +21,41 @@
 
   <div id="hasil"></div>
 
+  <!-- SheetJS CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
   <script>
+    let dataSiswa = [];
+
+    async function loadExcel() {
+      const response = await fetch("data.xlsx");
+      const arrayBuffer = await response.arrayBuffer();
+      const workbook = XLSX.read(arrayBuffer, { type: "array" });
+
+      const sheetName = workbook.SheetNames[0];
+      const sheet = workbook.Sheets[sheetName];
+
+      dataSiswa = XLSX.utils.sheet_to_json(sheet);
+      console.log("Data Excel Loaded:", dataSiswa);
+    }
+
     async function cekKelulusan() {
       const nisn = document.getElementById("nisn").value.trim();
       const hasil = document.getElementById("hasil");
+
+      if (dataSiswa.length === 0) {
+        await loadExcel();
+      }
 
       if (!nisn) {
         hasil.innerHTML = "⚠️ Masukkan NISN dulu.";
         return;
       }
 
-      const response = await fetch("data.json");
-      const data = await response.json();
-
-      const siswa = data.find(s => s.nisn === nisn);
+      const siswa = dataSiswa.find(s => String(s.nisn).trim() === nisn);
 
       if (siswa) {
-        if (siswa.status === "LULUS") {
+        if (String(siswa.status).toUpperCase() === "LULUS") {
           hasil.innerHTML = `🎉 Selamat ${siswa.nama}, Anda <span style="color:green;">LULUS</span>`;
         } else {
           hasil.innerHTML = `😢 Maaf ${siswa.nama}, Anda <span style="color:red;">TIDAK LULUS</span>`;
@@ -46,6 +64,9 @@
         hasil.innerHTML = "❌ NISN tidak ditemukan.";
       }
     }
+
+    // load excel saat halaman dibuka
+    loadExcel();
   </script>
 
 </body>
