@@ -28,7 +28,7 @@
     let dataSiswa = [];
 
     async function loadExcel() {
-      const response = await fetch("Data.xlsx");
+      const response = await fetch("data.xlsx");
       const arrayBuffer = await response.arrayBuffer();
       const workbook = XLSX.read(arrayBuffer, { type: "array" });
 
