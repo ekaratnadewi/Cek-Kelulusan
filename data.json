@@ -1,0 +1,4 @@
+[
+  { "nisn": "1234567890", "nama": "Andi", "status": "LULUS" },
+  { "nisn": "9876543210", "nama": "Budi", "status": "TIDAK LULUS" }
+]
